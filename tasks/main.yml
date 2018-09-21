@@ -1,0 +1,28 @@
+---
+- name: Remove existing folder if requested
+  become: yes
+  file:
+    path: "{{ go_bin_dir }}"
+    state: absent
+  when: go_upgrade
+
+- name: Check if Go is installed
+  stat:
+    path: "{{ go_bin_dir }}"
+  register: go_bin
+
+- name: Download and extract Go
+  become: yes
+  unarchive:
+    src: "https://dl.google.com/go/go{{ go_version }}.linux-{{ go_arch }}.tar.gz"
+    dest: "{{ usr_local }}"
+    remote_src: yes
+  when: not go_bin.stat.exists
+
+- name: Add Go to PATH
+  blockinfile:
+    marker: "# {mark} Go path"
+    dest: "{{ path_file }}"
+    content: |
+      export GOROOT={{ go_root }}
+      export PATH=$PATH:{{ go_bin_dir }}/bin:$GOROOT/bin
