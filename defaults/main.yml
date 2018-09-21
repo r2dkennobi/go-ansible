@@ -1,0 +1,8 @@
+---
+usr_local: "/usr/local"
+go_root: "~/go"
+go_bin_dir: "{{ usr_local }}/go"
+go_version: "1.11"
+go_arch: "amd64"
+go_upgrade: false
+path_file: "~/.bashrc"
